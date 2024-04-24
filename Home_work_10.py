@@ -3,21 +3,32 @@
 # всего из 1 столбца. Ваша задача перевести его в one hot вид. 
 # Сможете ли вы это сделать без get_dummies?
 
-# import random
+import random
 # lst = ['robot'] * 10
 # lst += ['human'] * 10
 # random.shuffle(lst)
 # data = pd.DataFrame({'whoAmI':lst})
 # data.head()
 
-import random
 import pandas as pd
 
+# Генерация данных
 lst = ['robot'] * 10 + ['human'] * 10
 random.shuffle(lst)
 data = pd.DataFrame({'whoAmI': lst})
-one_hot = pd.get_dummies(data['whoAmI']) # Преобразование в one hot вид
-data = pd.concat([data, one_hot], axis=1)
-# data.drop(columns=['whoAmI'], inplace=True) # Удаление исходного столбца 'whoAmI'
+
+# Получаем уникальные категории
+categories = data['whoAmI'].unique()
+
+# Создаем новые столбцы для каждой категории и заполняем нулями
+for category in categories:
+    data[category] = 0
+
+# Заполняем единицами соответствующие столбцы для каждой категории
+for i, row in data.iterrows():
+    category = row['whoAmI']
+    data.at[i, category] = 1
+
+#data.drop(columns=['whoAmI'], inplace=True) # Удаляем исходный столбец 'whoAmI'
 
 print(data.head())
